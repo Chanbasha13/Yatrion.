@@ -1,26 +1,430 @@
 @import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ============================================================
+   YATRION DESIGN SYSTEM — Tailwind v4 CSS-first configuration
+   ============================================================ */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* ── Primary palette ── */
+  --color-ivory: #FAF7F2;
+  --color-ivory-warm: #F5F0E8;
+  --color-cream: #EDE8DC;
+
+  --color-forest: #1B4332;
+  --color-forest-light: #2D6A4F;
+  --color-forest-dark: #0B2B1F;
+
+  --color-gold: #966600;
+  --color-gold-muted: #B8860B;
+  --color-gold-light: #DAC68E;
+
+  --color-charcoal: #2C2C2C;
+  --color-charcoal-light: #4A4A4A;
+  --color-charcoal-muted: #6B6B6B;
+
+  --color-white: #FFFFFF;
+  --color-border: #E2DDD3;
+  --color-border-light: #EDE8DC;
+
+  /* ── Semantic colors ── */
+  --color-background: var(--color-ivory);
+  --color-foreground: var(--color-charcoal);
+  --color-primary: var(--color-forest);
+  --color-primary-hover: var(--color-forest-light);
+  --color-accent: var(--color-gold);
+  --color-muted: var(--color-charcoal-muted);
+  --color-surface: var(--color-white);
+  --color-surface-warm: var(--color-ivory-warm);
+
+  /* ── Status colors ── */
+  --color-success: #2D6A4F;
+  --color-warning: #B8860B;
+  --color-error: #C1292E;
+  --color-info: #2563EB;
+
+  /* ── Typography (including authentic Kannada font stack) ── */
+  --font-sans: "Inter", "Noto Sans Kannada", "Tunga", "Kedage", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "Playfair Display", "Noto Serif Kannada", Georgia, serif;
+
+  /* ── Spacing scale (extending Tailwind defaults) ── */
+  --spacing-18: 4.5rem;
+  --spacing-22: 5.5rem;
+
+  /* ── Border radius tokens ── */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  /* ── Shadow tokens ── */
+  --shadow-subtle: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
+  --shadow-card: 0 2px 8px -2px rgba(0, 0, 0, 0.06), 0 1px 3px -1px rgba(0, 0, 0, 0.04);
+  --shadow-elevated: 0 4px 16px -4px rgba(0, 0, 0, 0.1), 0 2px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── Base reset & defaults ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-ivory);
+  color: var(--color-charcoal);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Focus styles for accessibility ── */
+:focus-visible {
+  outline: 2px solid var(--color-forest);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ── Selection color ── */
+::selection {
+  background-color: var(--color-gold-light);
+  color: var(--color-forest-dark);
+}
+
+/* ── Headings default to serif ── */
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  color: var(--color-forest-dark);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+/* ── Smooth image defaults ── */
+img, video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ── Utility: Content container ── */
+.container-content {
+  width: 100%;
+  max-width: 80rem; /* 1280px */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .container-content {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-content {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* ── Prevent horizontal overflow at root ── */
+html, body {
+  overflow-x: hidden;
+}
+
+/* ── Animation & Transitions ── */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.18s ease-out forwards;
+}
+
+/* ── Accessibility: Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   PRINT STYLES FOR ITINERARY EXPORT & TRIP SHEETS
+   ============================================================ */
+@media print {
+  /* Hide non-printable elements */
+  header,
+  footer,
+  nav,
+  .no-print,
+  [data-no-print="true"],
+  button:not(.print-keep),
+  form,
+  #destinations,
+  #experiences,
+  #how-it-works,
+  #cta {
+    display: none !important;
+  }
+
+  body {
+    background-color: #ffffff !important;
+    color: #111827 !important;
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  #planner {
+    padding: 0 !important;
+    background-color: transparent !important;
+  }
+
+  .container-content {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Force borders and clean contrast */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Prevent awkward page breaks inside day blocks */
+  .itinerary-day-card {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 2rem;
+  }
+
+  /* Links should not show ugly URLs in print */
+  a[href]::after {
+    content: "" !important;
+  }
+}
+
+/* ============================================================
+   YATRION LEAFLET REAL GEOGRAPHIC MAP STYLES
+   ============================================================ */
+
+.yatrion-map-container .leaflet-control-zoom {
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+.yatrion-map-container .leaflet-control-zoom a {
+  background-color: #0d261c !important;
+  color: #f5f0e8 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  transition: all 0.2s ease;
+  width: 32px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+  font-size: 16px !important;
+}
+
+.yatrion-map-container .leaflet-control-zoom a:hover {
+  background-color: #1b4332 !important;
+  color: #d4af37 !important;
+}
+
+.yatrion-map-container .leaflet-control-attribution {
+  background: rgba(8, 21, 16, 0.88) !important;
+  color: rgba(245, 240, 232, 0.7) !important;
+  backdrop-filter: blur(8px);
+  padding: 4px 10px !important;
+  font-size: 10px !important;
+  border-top-left-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.yatrion-map-container .leaflet-control-attribution a {
+  color: #d4af37 !important;
+  text-decoration: none;
+}
+
+.yatrion-map-container .leaflet-control-attribution a:hover {
+  text-decoration: underline;
+}
+
+.yatrion-map-popup .leaflet-popup-content-wrapper {
+  background: #0d261c !important;
+  color: #f5f0e8 !important;
+  border: 1px solid rgba(212, 175, 55, 0.4) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.65), 0 0 18px rgba(212, 175, 55, 0.2) !important;
+  padding: 0 !important;
+}
+
+.yatrion-map-popup .leaflet-popup-content {
+  margin: 0 !important;
+  line-height: 1.4 !important;
+}
+
+.yatrion-map-popup .leaflet-popup-tip {
+  background: #0d261c !important;
+  border: 1px solid rgba(212, 175, 55, 0.4) !important;
+}
+
+.yatrion-map-popup .leaflet-popup-close-button {
+  color: rgba(245, 240, 232, 0.7) !important;
+  top: 6px !important;
+  right: 6px !important;
+  font-size: 16px !important;
+}
+
+.yatrion-map-popup .leaflet-popup-close-button:hover {
+  color: #d4af37 !important;
+}
+
+/* Custom Marker Pins */
+.yatrion-map-pin {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.yatrion-map-pin:hover {
+  transform: scale(1.18);
+  z-index: 1000 !important;
+}
+
+.yatrion-map-pin .pin-inner {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--pin-color, #1b4332);
+  border: 2px solid #FAF7F2;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.yatrion-map-pin .pin-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #D4AF37;
+}
+
+.yatrion-map-pin.selected .pin-inner {
+  width: 28px;
+  height: 28px;
+  background: #D4AF37;
+  border-color: #FAF7F2;
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.8);
+}
+
+.yatrion-map-pin.selected .pin-dot {
+  background: #0B2B1F;
+}
+
+.yatrion-map-pin .pin-pulse {
+  position: absolute;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid #F59E0B;
+  animation: yatrion-pulse 1.8s infinite;
+  pointer-events: none;
+}
+
+.yatrion-map-pin .pin-label {
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  background: rgba(8, 21, 16, 0.88);
+  color: #FAF7F2;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.yatrion-map-pin:hover .pin-label,
+.yatrion-map-pin.selected .pin-label {
+  opacity: 1;
+  background: #0B2B1F;
+  border-color: #D4AF37;
+  color: #D4AF37;
+  font-weight: 600;
+}
+
+@keyframes yatrion-pulse {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* Custom Waypoint Pin for Active Route */
+.yatrion-waypoint-pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.yatrion-waypoint-pin .waypoint-badge {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #1B4332;
+  border: 2px solid #D4AF37;
+  color: #F8F9FA;
+  font-size: 11px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.yatrion-waypoint-pin.completed .waypoint-badge {
+  background: #16A34A;
+  border-color: #86EFAC;
+  color: white;
+}
+
+.yatrion-tooltip {
+  background: #0B2B1F !important;
+  color: #FAF7F2 !important;
+  border: 1px solid rgba(212, 175, 55, 0.4) !important;
+  border-radius: 6px !important;
+  font-size: 11px !important;
+  padding: 4px 8px !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
 }
